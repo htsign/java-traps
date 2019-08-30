@@ -1,7 +1,7 @@
 package htsign.util.trap;
 
+import htsign.util.function.Consumer;
 import htsign.util.function.Function;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
@@ -26,20 +26,26 @@ public class Left<L, R> extends Either<L, R>
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> Either<L, T> map(Function<R, T> function)
+	public <T> Either<L, T> map(Function<? super R, ? extends T> function)
 	{
 		return (Either<L, T>) this;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> Either<L, T> flatMap(Function<R, Either<L, T>> function)
+	public <T> Either<L, T> flatMap(Function<? super R, ? extends Either<L, T>> function)
 	{
 		return (Either<L, T>) this;
 	}
 
 	@Override
-	public R match(Function<L, R> onLeft, Function<R, R> onRight)
+	public void consume(Consumer<? super R> consumer) { }
+
+	@Override
+	public void match(Consumer<? super L> onLeft, Consumer<? super R> onRight) { }
+
+	@Override
+	public <T> T match(Function<? super L, ? extends T> onLeft, Function<? super R, ? extends T> onRight)
 	{
 		return onLeft.apply(getValue());
 	}

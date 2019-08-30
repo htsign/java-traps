@@ -1,5 +1,7 @@
 package htsign.util.trap;
 
+import htsign.util.function.Consumer;
+import htsign.util.function.Function;
 import htsign.util.function.ThrowableFunction;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -26,16 +28,31 @@ public class Failure<T, E extends Throwable> extends Try<T, E>
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <R> Try<R, E> map(ThrowableFunction<T, R> function)
+	public <R> Try<R, E> map(ThrowableFunction<? super T, ? extends R> function)
 	{
 		return (Try<R, E>) this;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <R> Try<R, E> flatMap(ThrowableFunction<T, Try<R, E>> function)
+	public <R> Try<R, E> flatMap(ThrowableFunction<? super T, ? extends Try<R, E>> function)
 	{
 		return (Try<R, E>) this;
+	}
+
+	@Override
+	public void consume(Consumer<? super T> consumer) { }
+
+	@Override
+	public void match(Consumer<? super E> onFailure, Consumer<? super T> onSuccess)
+	{
+		onFailure.accept(getThrowable());
+	}
+
+	@Override
+	public <U> U match(Function<? super E, ? extends U> onFailure, Function<? super T, ? extends U> onSuccess)
+	{
+		return onFailure.apply(getThrowable());
 	}
 
 	@Override

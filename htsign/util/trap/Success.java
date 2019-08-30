@@ -1,11 +1,12 @@
 package htsign.util.trap;
 
+import htsign.util.function.Consumer;
+import htsign.util.function.Function;
 import htsign.util.function.ThrowableFunction;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
-import lombok.val;
 
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @Value @EqualsAndHashCode(callSuper = true)
@@ -26,14 +27,14 @@ public class Success<T, E extends Throwable> extends Try<T, E>
 	}
 
 	@Override
-	public <R> Try<R, E> map(ThrowableFunction<T, R> function)
+	public <R> Try<R, E> map(ThrowableFunction<? super T, ? extends R> function)
 	{
 		return Try.of(function, getValue());
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <R> Try<R, E> flatMap(ThrowableFunction<T, Try<R, E>> function)
+	public <R> Try<R, E> flatMap(ThrowableFunction<? super T, ? extends Try<R, E>> function)
 	{
 		try
 		{
@@ -43,6 +44,24 @@ public class Success<T, E extends Throwable> extends Try<T, E>
 		{
 			return new Failure<R, E>((E) throwable);
 		}
+	}
+
+	@Override
+	public void consume(Consumer<? super T> consumer)
+	{
+		consumer.accept(getValue());
+	}
+
+	@Override
+	public void match(Consumer<? super E> onFailure, Consumer<? super T> onSuccess)
+	{
+		onSuccess.accept(getValue());
+	}
+
+	@Override
+	public <U> U match(Function<? super E, ? extends U> onFailure, Function<? super T, ? extends U> onSuccess)
+	{
+		return onSuccess.apply(getValue());
 	}
 
 	@Override
