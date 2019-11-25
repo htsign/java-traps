@@ -27,14 +27,14 @@ public class Success<T, E extends Throwable> extends Try<T, E>
 	}
 
 	@Override
-	public <R> Try<R, E> map(ThrowableFunction<? super T, ? extends R> function)
+	public <R> Try<R, E> map(ThrowableFunction<? super T, ? extends R, E> function)
 	{
 		return Try.of(function, getValue());
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <R> Try<R, E> flatMap(ThrowableFunction<? super T, ? extends Try<R, E>> function)
+	public <R> Try<R, E> flatMap(ThrowableFunction<? super T, ? extends Try<R, E>, E> function)
 	{
 		try
 		{

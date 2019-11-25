@@ -7,8 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Value;
 
 @AllArgsConstructor(staticName = "of")
-@Value
-@EqualsAndHashCode(callSuper = true)
+@Value @EqualsAndHashCode(callSuper = true)
 public class Right<L, R> extends Either<L, R>
 {
 	private R value;

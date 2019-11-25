@@ -1,6 +1,6 @@
 package htsign.util.function;
 
-public interface ThrowableSupplier<T>
+public interface ThrowableSupplier<T, E extends Throwable>
 {
-	<E extends Throwable> T getThrows() throws E;
+	T getThrows() throws E;
 }
