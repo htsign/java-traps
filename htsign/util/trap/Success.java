@@ -14,24 +14,28 @@ public class Success<T, E extends Throwable> extends Try<T, E>
 {
 	private T value;
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isSuccess()
 	{
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isFailure()
 	{
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public <R> Try<R, E> map(ThrowableFunction<? super T, ? extends R, E> function)
 	{
 		return Try.of(function, getValue());
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings("unchecked")
 	@Override
 	public <R> Try<R, E> flatMap(ThrowableFunction<? super T, ? extends Try<R, E>, E> function)
@@ -46,24 +50,28 @@ public class Success<T, E extends Throwable> extends Try<T, E>
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void consume(Consumer<? super T> consumer)
 	{
 		consumer.accept(getValue());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void match(Consumer<? super E> onFailure, Consumer<? super T> onSuccess)
 	{
 		onSuccess.accept(getValue());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public <U> U match(Function<? super E, ? extends U> onFailure, Function<? super T, ? extends U> onSuccess)
 	{
 		return onSuccess.apply(getValue());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Either<E, T> toEither()
 	{
